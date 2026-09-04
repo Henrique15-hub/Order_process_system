@@ -3,19 +3,23 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Cart;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'cnpj', 'role', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -25,18 +29,20 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'cnpj' => 'string',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
 
-    public function client(): HasMany
+    public function order(): HasMany
     {
-        return $this->hasMany(Client::class);
+        return $this->hasMany(Order::class);
     }
 
-    public function businessAccount(): HasMany
+    public function cart(): HasOne
     {
-        return $this->hasMany(BusinessAccount::class);
+        return $this->hasOne(Cart::class);
     }
+
 }

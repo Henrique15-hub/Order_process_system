@@ -14,7 +14,7 @@ Processa pagamento
    ↓
 Confirma pedido
    ↓
-Envia para processamento
+Envia para processamento 
 
 Você poderia implementar:
 
