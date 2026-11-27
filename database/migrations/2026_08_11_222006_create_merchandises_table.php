@@ -12,10 +12,10 @@ return new class extends Migration {
     {
         Schema::create('merchandises', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->string('public_id', 512)->unique();
             $table->string('name');
-            $table->decimal('price');
-            $table->integer('stock_quantity');
+            $table->decimal('price', 10, 2);
+            $table->unsignedInteger('stock_quantity');
             $table->timestamps();
         });
     }

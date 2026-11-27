@@ -16,17 +16,10 @@ class AuthLoginRequest extends FormRequest
     {
         return [
             "email" => [
-                'required_without:cnpj',
+                'required',
                 'email',
                 'string',
                 'exists:users,email'
-            ],
-
-            "cnpj" => [
-                'required_without:email',
-                'cnpj',
-                'string',
-                'exists:users,cnpj'
             ],
 
             "password" => [

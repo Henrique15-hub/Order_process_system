@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(["business_account_id", "name", "price", "stock_quantity", "user_id"])]
+#[Fillable(["business_account_id", "name", "price", "stock_quantity", "public_id"])]
 class Merchandise extends Model
 {
+    use HasFactory;
     public function cart(): HasOne
     {
         return $this->hasOne(Cart::class);

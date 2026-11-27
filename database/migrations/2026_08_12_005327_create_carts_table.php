@@ -12,9 +12,10 @@ return new class extends Migration {
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->json('items')->nullable();
-            $table->decimal('actual_value')->nullable();
+            $table->float('actual_value')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }

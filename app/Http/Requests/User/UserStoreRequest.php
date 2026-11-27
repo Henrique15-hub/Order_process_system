@@ -25,14 +25,6 @@ class UserStoreRequest extends FormRequest
                 'email',
                 'nullable',
                 'unique:users,email',
-                ''
-            ],
-
-            'cnpj' => [
-                'required_without:email',
-                'cnpj',
-                'nullable',
-                'unique:users,cnpj',
             ],
 
             'password' => [

@@ -23,7 +23,7 @@ class MerchandiseStoreRequest extends FormRequest
             'price' => [
                 'required',
                 'numeric',
-                'min:0.01'
+                'min:0.01',
             ],
 
             'stock_quantity' => [

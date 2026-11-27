@@ -22,7 +22,6 @@ class UserInvalidCredentialException extends Exception
     public function render(Request $request): JsonResponse
     {
         return response()->json([
-            "sucess" => false,
             "message" => $this->getMessage(),
         ], $this->status);
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\RoleEnum;
 use App\Models\Cart;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -14,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'cnpj', 'role', 'password'])]
+#[Fillable(['name', 'email', 'role', 'password'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -29,9 +30,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'cnpj' => 'string',
+
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => RoleEnum::class,
         ];
     }
 

@@ -1,26 +1,29 @@
 <?php
 namespace App\UseCase\User;
 
-use App\Repositories\CartRepository;
+use App\Models\User;
+use App\Service\CartService;
 use App\Service\UserService;
+use Illuminate\Support\Facades\DB;
+
 class UserCreateUseCase
 {
     public function __construct(
         private UserService $userService,
-        private CartRepository $cartRepository,
+        private CartService $cartService
     ) {
         //
     }
 
-    public function execute($data)
+    public function execute(array $data): User
     {
-        $user = $this->userService->store($data);
+        return DB::transaction(function () use ($data) {
+            $user = $this->userService->store($data);
 
-        $this->cartRepository->store($user->id);
+            $this->cartService->store($user->id);
 
-        return [
-            "name" => $user->name,
-            "accountRole" => $user->role,
-        ];
+            return $user;
+        });
+
     }
 }

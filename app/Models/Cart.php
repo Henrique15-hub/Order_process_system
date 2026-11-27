@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\CartStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'items', 'actual_value'])]
+#[Fillable(['user_id', 'items', 'status', 'actual_value'])]
 class Cart extends Model
 {
     public function user(): BelongsTo
@@ -29,11 +29,20 @@ class Cart extends Model
     public function casts()
     {
         return [
-            'items' => AsArrayObject::class,
+            'items' => 'array',
             'actual_value' => 'float',
+            'status' => CartStatus::class
         ];
     }
 
+    public function getItems()
+    {
+        return $this->items;
+    }
 
+    public function getActualValue()
+    {
+        return $this->actual_value;
+    }
 
 }

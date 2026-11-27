@@ -3,27 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\UserStoreRequest;
+use App\Service\UserService;
 use App\UseCase\User\UserCreateUseCase;
 
 class UserController extends Controller
 {
     public function __construct(
-        private UserCreateUseCase $userStoreUseCase
+        private UserCreateUseCase $userStoreUseCase,
+        private UserService $userService
     ) {
         //
     }
     public function store(UserStoreRequest $request)
     {
-        $userInfo = $this->userStoreUseCase->execute($request->validated());
+        $user = $this->userStoreUseCase->execute($request->validated());
 
         return response()->json([
-            'success' => true,
             'message' => 'Account created successfully',
-            'status' => 200,
             'data' => [
-                'Account Name' => $userInfo['name'],
-                'Account Role' => $userInfo['accountRole'],
+                "name" => data_get($user, 'name'),
+                "email" => data_get($user, 'email'),
+                "role" => data_get($user, 'role'),
             ],
+        ], 201);
+    }
+
+    public function delete()
+    {
+        $this->userService->delete(auth()->id());
+
+        return response()->json([
+            'message' => 'User and cart deleted successfully!'
         ]);
+
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\CartStatus;
+use App\Enums\RoleEnum;
+use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -27,6 +30,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
+            'role' => RoleEnum::Client,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
@@ -38,8 +42,20 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (User $user) {
+            Cart::create([
+                'user_id' => $user->id,
+                'items' => [],
+                'actual_value' => 0,
+                'status' => CartStatus::Open
+            ]);
+        });
     }
 }

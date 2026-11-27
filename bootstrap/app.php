@@ -1,9 +1,12 @@
 <?php
 
-use Illuminate\Auth\Access\AuthorizationException;
+
+use App\Exceptions\Merchandise\IdenticalMerchandiseNotAllowedException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -16,10 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (AuthorizationException $e) {
+
+        $exceptions->render(function (AccessDeniedHttpException $e): JsonResponse {
             return response()->json([
-                'success' => false,
-                'message' => $e->getMessage() ?: 'This action is unauthorized.',
-            ], 403);
+                'message' => $e->getMessage() ?: "This action is unauthorized",
+            ], $e->getStatusCode());
         });
+
     })->create();

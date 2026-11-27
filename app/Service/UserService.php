@@ -2,28 +2,81 @@
 namespace App\Service;
 
 use App\Enums\RoleEnum;
-use App\Exceptions\UserInvalidCredentialException;
+use App\Exceptions\ForbbidenException;
 use App\Repositories\UserRepository;
+use RuntimeException;
 
 class UserService
 {
     public function __construct(
-        private UserRepository $repo,
+        private UserRepository $userRepository
     ) {
-        //
+
     }
-    public function store($data)
+
+    public function store(array $data)
     {
-        if (isset($data['cnpj']) && isset($data['email'])) {
-            throw new UserInvalidCredentialException("You can't create an account with 'email 'and 'cpnj'.", 422);
+        $data['role'] = RoleEnum::Client->value;
+
+        return $this->userRepository->store($data);
+    }
+
+
+    public function delete(int $userId)
+    {
+        $deleted = $this->userRepository->delete($userId);
+
+        if (!$deleted) {
+            throw new RuntimeException();
         }
 
-        isset($data['cnpj'])
-            ? $data['role'] = RoleEnum::BusinessAccount->value
-            : $data['role'] = RoleEnum::Client->value;
+        return $deleted;
 
-        $user = $this->repo->store($data);
-
-        return $user;
     }
+
+    public function indexAdmin()
+    {
+        return $this->userRepository->indexAdmin();
+    }
+
+    public function showAdmin(array $data)
+    {
+        $id = data_get($data, 'id');
+        return $this->userRepository->showAdmin($id);
+    }
+
+    public function updateAdmin(array $data)
+    {
+        $id = data_get($data, 'id');
+
+        $user = $this->userRepository->findByid($id);
+
+        if ($user->role === RoleEnum::Admin) {
+            throw new ForbbidenException("You can't delete an admin!");
+        }
+
+        unset($data['id']);
+
+        return $this->userRepository->updateAdmin($id, $data);
+    }
+
+    public function deleteAdmin(array $data)
+    {
+        $id = data_get($data, 'id');
+
+        $user = $this->userRepository->findByid($id);
+
+        if ($user->role === RoleEnum::Admin) {
+            throw new ForbbidenException("You can't delete an admin!");
+        }
+
+        $deleted = $this->userRepository->deleteAdmin($id);
+
+        if (!$deleted) {
+            throw new RuntimeException();
+        }
+
+        return true;
+    }
+
 }

@@ -12,8 +12,9 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->string('payload');
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('payment_provider');
+            $table->json('items')->nullable();
             $table->decimal('value');
             $table->string('payment_status');
             $table->timestamps();

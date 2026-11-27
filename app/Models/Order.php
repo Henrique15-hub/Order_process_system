@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Enums\PayloadEnum;
+use App\Enums\PaymentProviderEnum;
 use App\Enums\PaymentStatusEnum;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'payload', 'value', 'payment_status'])]
+#[Fillable(['user_id', 'payment_provider', 'items', 'value', 'payment_status'])]
 class Order extends Model
 {
-    public function client(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(User::class);
     }
 
     public function cart(): BelongsTo
@@ -24,9 +24,10 @@ class Order extends Model
     public function casts()
     {
         return [
-            'payload' => PayloadEnum::class,
             'value' => 'float',
             'payment_status' => PaymentStatusEnum::class,
+            'items' => 'array',
+            'payment_provider' => PaymentProviderEnum::class,
         ];
     }
 }
